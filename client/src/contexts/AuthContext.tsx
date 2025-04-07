@@ -37,19 +37,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const checkAuth = async () => {
     try {
-      console.log('🔍 Checking authentication status...');
       const response = await fetch(`${API_URL}/api/auth/me`, {
         credentials: 'include',
       });
 
       if (!response.ok) {
-        console.log('❌ Not authenticated');
         setUser(null);
         return;
       }
 
       const data = await response.json();
-      console.log('✅ User authenticated:', data.data.user);
       setUser(data.data.user);
     } catch (error) {
       console.error('💥 Auth check error:', error);
@@ -61,7 +58,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
-      console.log('🔑 Attempting login...');
       setLoading(true);
       setError(null);
 
@@ -77,11 +73,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const data = await response.json();
 
       if (!response.ok) {
-        console.log('❌ Login failed:', data.error);
         throw new Error(data.error || 'Login failed');
       }
 
-      console.log('✅ Login successful');
       await checkAuth();
       router.push('/dashboard');
     } catch (error) {
@@ -98,12 +92,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
-      console.log('🚪 Logging out...');
       await fetch(`${API_URL}/api/auth/logout`, {
         method: 'POST',
         credentials: 'include',
       });
-      console.log('✅ Logout successful');
       setUser(null);
       router.push('/');
     } catch (error) {

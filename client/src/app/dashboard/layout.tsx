@@ -22,7 +22,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <DashboardNav />
         </aside>
 
-        <main className="flex-1 md:pl-[200px]">
+        <main className="flex-1 md:pl-[200px] overflow-x-hidden">
           <div className="container mx-auto p-4 md:p-6">{children}</div>
         </main>
       </div>

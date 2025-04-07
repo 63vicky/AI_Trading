@@ -146,10 +146,10 @@ export function LoginForm() {
 
       <div className="text-sm text-center">
         <p className="text-gray-600">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link
             href="/register"
-            className="text-indigo-600 hover:text-indigo-500 font-medium"
+            className="text-indigo-600 hover:text-indigo-500 font-medium underline underline-offset-4"
           >
             Register here
           </Link>

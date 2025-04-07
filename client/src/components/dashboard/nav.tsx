@@ -4,7 +4,16 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { BarChart3, Home, LineChart, Settings, Wallet } from 'lucide-react';
+import {
+  Home,
+  LineChart,
+  Settings,
+  Wallet,
+  BarChart3,
+  Hash,
+  Database,
+  TrendingUp,
+} from 'lucide-react';
 
 const items = [
   {
@@ -13,19 +22,34 @@ const items = [
     icon: Home,
   },
   {
-    title: 'Portfolio',
-    href: '/dashboard/portfolio',
-    icon: Wallet,
+    title: 'Market',
+    href: '/dashboard/market',
+    icon: TrendingUp,
   },
   {
-    title: 'Strategies',
-    href: '/dashboard/strategies',
+    title: 'Trades',
+    href: '/dashboard/trades',
     icon: LineChart,
   },
   {
-    title: 'Analytics',
-    href: '/dashboard/analytics',
+    title: 'Pool',
+    href: '/dashboard/pool',
+    icon: Database,
+  },
+  {
+    title: 'Hashrate',
+    href: '/dashboard/hashrate',
+    icon: Hash,
+  },
+  {
+    title: 'Rigs',
+    href: '/dashboard/rigs',
     icon: BarChart3,
+  },
+  {
+    title: 'Portfolio',
+    href: '/dashboard/portfolio',
+    icon: Wallet,
   },
   {
     title: 'Settings',
