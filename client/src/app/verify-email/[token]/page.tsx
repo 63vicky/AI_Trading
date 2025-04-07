@@ -7,6 +7,8 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Loader2 } from 'lucide-react';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
 export default function VerifyEmailPage({
   params,
 }: {
@@ -23,7 +25,7 @@ export default function VerifyEmailPage({
     const verifyEmail = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/auth/verify-email/${token}`
+          `${API_URL}/api/auth/verify-email/${token}`
         );
         const data = await response.json();
 

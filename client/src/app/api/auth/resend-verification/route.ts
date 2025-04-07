@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 export async function POST(request: Request) {
   try {
@@ -7,16 +8,13 @@ export async function POST(request: Request) {
 
     console.log('Resending verification email to:', email);
 
-    const response = await fetch(
-      'http://localhost:5000/api/auth/resend-verification',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      }
-    );
+    const response = await fetch(`${API_URL}/api/auth/resend-verification`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    });
 
     const data = await response.json();
     console.log('Backend response:', data);

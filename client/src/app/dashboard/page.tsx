@@ -41,6 +41,7 @@ export default function DashboardPage() {
     beta: 0,
     volatility: 0,
   });
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -105,7 +106,7 @@ export default function DashboardPage() {
 
     try {
       setError(null);
-      const response = await fetch('http://localhost:5000/api/strategies', {
+      const response = await fetch(`${API_URL}/api/strategies`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -140,7 +141,7 @@ export default function DashboardPage() {
 
     try {
       setError(null);
-      const response = await fetch('http://localhost:5000/api/risk', {
+      const response = await fetch(`${API_URL}/api/risk`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
