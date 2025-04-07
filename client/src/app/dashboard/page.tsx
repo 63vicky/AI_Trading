@@ -52,26 +52,29 @@ export default function DashboardPage() {
     // Subscribe to live data updates
     const unsubscribeLiveData = websocketService.subscribe(
       'liveData',
-      (data: LiveData) => {
-        setLiveData(data);
+      (data) => {
+        if ('activeStrategies' in data) {
+          setLiveData(data as LiveData);
+        }
       }
     );
 
     // Subscribe to performance updates
     const unsubscribePerformance = websocketService.subscribe(
       'performance',
-      (data: PerformanceData) => {
-        setPerformanceData(data);
+      (data) => {
+        if ('totalPnL' in data) {
+          setPerformanceData(data as PerformanceData);
+        }
       }
     );
 
     // Subscribe to risk parameter updates
-    const unsubscribeRisk = websocketService.subscribe(
-      'risk',
-      (data: RiskParameters) => {
-        setRiskParams(data);
+    const unsubscribeRisk = websocketService.subscribe('risk', (data) => {
+      if ('circuitBreaker' in data) {
+        setRiskParams(data as RiskParameters);
       }
-    );
+    });
 
     // Fetch initial performance data
     fetchPerformanceData();
