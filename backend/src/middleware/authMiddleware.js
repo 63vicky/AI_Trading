@@ -13,7 +13,7 @@ exports.protect = async (req, res, next) => {
     } else if (req.cookies && req.cookies.token) {
       token = req.cookies.token;
     }
-
+    console.log(req);
     if (!token) {
       return res.status(401).json({
         status: 'error',
