@@ -13,6 +13,15 @@ const nextConfig = {
       },
     ];
   },
+  // Ensure pages are properly detected
+  pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
+  // Enable static page generation
+  output: 'standalone',
+  // Add experimental features for app directory
+  experimental: {
+    appDir: true,
+    serverActions: true,
+  },
 };
 
 export default nextConfig;
