@@ -82,11 +82,15 @@ export async function isAuthenticated(): Promise<boolean> {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
       },
       cache: 'no-store',
+      mode: 'cors',
     });
 
     if (!response.ok) {
+      console.error('Auth check failed:', response.status, response.statusText);
       return false;
     }
 
@@ -106,11 +110,19 @@ export async function isVerified(): Promise<boolean> {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
       },
       cache: 'no-store',
+      mode: 'cors',
     });
 
     if (!response.ok) {
+      console.error(
+        'Verification check failed:',
+        response.status,
+        response.statusText
+      );
       return false;
     }
 
