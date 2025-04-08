@@ -81,9 +81,17 @@ export async function isAuthenticated(): Promise<boolean> {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
+      cache: 'no-store',
     });
-    return response.ok;
+
+    if (!response.ok) {
+      return false;
+    }
+
+    const data = await response.json();
+    return data.status === 'success' && data.data.user;
   } catch (error) {
     console.error('💥 Auth check error:', error);
     return false;
@@ -97,10 +105,17 @@ export async function isVerified(): Promise<boolean> {
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
+      cache: 'no-store',
     });
+
+    if (!response.ok) {
+      return false;
+    }
+
     const data = await response.json();
-    return response.ok && data.data.user.isVerified;
+    return data.status === 'success' && data.data.user.isVerified;
   } catch (error) {
     console.error('💥 Verification check error:', error);
     return false;

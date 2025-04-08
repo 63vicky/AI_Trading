@@ -145,17 +145,16 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // 1) Check if email and password exist
+    // Check if email and password exist
     if (!email || !password) {
       return res.status(400).json({
         status: 'error',
-        message: 'Please provide email and password!',
+        message: 'Please provide email and password',
       });
     }
 
-    // 2) Check if user exists && password is correct
+    // Check if user exists and password is correct
     const user = await User.findOne({ email }).select('+password');
-
     if (!user || !(await user.correctPassword(password, user.password))) {
       return res.status(401).json({
         status: 'error',
@@ -163,7 +162,7 @@ exports.login = async (req, res) => {
       });
     }
 
-    // 3) Check if user is verified
+    // Check if user is verified
     if (!user.isVerified) {
       return res.status(401).json({
         status: 'error',
@@ -171,39 +170,34 @@ exports.login = async (req, res) => {
       });
     }
 
-    // 4) If everything ok, send token to client
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: process.env.JWT_EXPIRES_IN,
-    });
+    // Generate JWT token
+    const token = signToken(user._id);
 
-    // Set cookie options
-    const cookieOptions = {
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    // Set cookie
+    res.cookie('jwt', token, {
+      expires: new Date(
+        Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+      ),
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'none',
       path: '/',
-      domain:
-        process.env.NODE_ENV === 'production' ? '.yourdomain.com' : undefined,
-    };
+    });
 
-    // Set token in cookie
-    res.cookie('token', token, cookieOptions);
-
-    // Remove password from output
+    // Remove sensitive data from response
     user.password = undefined;
 
     res.status(200).json({
       status: 'success',
+      token,
       data: {
         user,
       },
     });
   } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({
+    res.status(400).json({
       status: 'error',
-      message: 'An error occurred during login',
+      message: error.message,
     });
   }
 };
@@ -251,6 +245,13 @@ exports.verifyEmail = async (req, res) => {
 exports.getMe = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'User not found',
+      });
+    }
+
     res.status(200).json({
       status: 'success',
       data: {
@@ -258,10 +259,9 @@ exports.getMe = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Get me error:', error);
-    res.status(500).json({
+    res.status(400).json({
       status: 'error',
-      message: 'An error occurred while fetching user data',
+      message: error.message,
     });
   }
 };
