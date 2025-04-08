@@ -16,6 +16,10 @@ import {
 } from 'recharts';
 import { BacktestConfig, BacktestResult } from '@/types/backtest';
 import { Calendar } from './ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { Button as CalendarButton } from './ui/button';
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
 
 interface BacktestProps {
   strategyId: string;
@@ -73,28 +77,62 @@ export function Backtest({ strategyId, onRunBacktest }: BacktestProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label>Start Date</Label>
-              <Calendar
-                selected={new Date(config.startDate)}
-                onSelect={(date: Date) =>
-                  setConfig({
-                    ...config,
-                    startDate: date.toISOString().split('T')[0],
-                  })
-                }
-              />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <CalendarButton
+                    variant="outline"
+                    className="w-full justify-start text-left font-normal"
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {format(new Date(config.startDate), 'PPP')}
+                  </CalendarButton>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={new Date(config.startDate)}
+                    onSelect={(date) => {
+                      if (date) {
+                        setConfig({
+                          ...config,
+                          startDate: date.toISOString().split('T')[0],
+                        });
+                      }
+                    }}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
 
             <div className="space-y-2">
               <Label>End Date</Label>
-              <Calendar
-                selected={new Date(config.endDate)}
-                onSelect={(date: Date) =>
-                  setConfig({
-                    ...config,
-                    endDate: date.toISOString().split('T')[0],
-                  })
-                }
-              />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <CalendarButton
+                    variant="outline"
+                    className="w-full justify-start text-left font-normal"
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {format(new Date(config.endDate), 'PPP')}
+                  </CalendarButton>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                  <Calendar
+                    mode="single"
+                    selected={new Date(config.endDate)}
+                    onSelect={(date) => {
+                      if (date) {
+                        setConfig({
+                          ...config,
+                          endDate: date.toISOString().split('T')[0],
+                        });
+                      }
+                    }}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
 
             <div className="space-y-2">

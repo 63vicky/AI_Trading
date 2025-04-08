@@ -80,19 +80,16 @@ export function NewTradeDialog({
         throw new Error('Failed to create trade');
       }
 
-      toast({
-        title: 'Success',
+      toast('Success', {
         description: 'Trade created successfully',
       });
 
       onTradeCreated();
       onOpenChange(false);
       form.reset();
-    } catch (error) {
-      toast({
-        title: 'Error',
+    } catch {
+      toast.error('Error', {
         description: 'Failed to create trade',
-        variant: 'destructive',
       });
     } finally {
       setIsLoading(false);

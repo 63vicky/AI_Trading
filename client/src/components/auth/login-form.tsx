@@ -50,7 +50,7 @@ export function LoginForm() {
       }
 
       toast.success('Verification email sent successfully');
-    } catch (error) {
+    } catch {
       toast.error('Failed to resend verification email');
     }
   };
@@ -88,10 +88,8 @@ export function LoginForm() {
 
       toast.success('Login successful');
       router.push('/dashboard');
-    } catch (err) {
-      const error = err as Error;
-      console.error('Login error:', error);
-      toast.error(error.message || 'Invalid credentials');
+    } catch {
+      toast.error('Invalid credentials');
     } finally {
       setIsLoading(false);
     }

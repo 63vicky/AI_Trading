@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { StrategyConfig } from '@/components/StrategyConfig';
 import { PerformanceDashboard } from '@/components/PerformanceDashboard';
 import { RiskManagement } from '@/components/RiskManagement';
@@ -42,6 +42,23 @@ export default function DashboardPage() {
     volatility: 0,
   });
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
+  const fetchPerformanceData = useCallback(async () => {
+    if (!user) return;
+
+    try {
+      setError(null);
+      const data = await getAllStrategiesPerformance();
+      setPerformanceData(data);
+    } catch (error) {
+      console.error('Error fetching performance data:', error);
+      setError(
+        error instanceof Error
+          ? error.message
+          : 'Failed to fetch performance data'
+      );
+    }
+  }, [user, getAllStrategiesPerformance]);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -85,24 +102,7 @@ export default function DashboardPage() {
       unsubscribePerformance();
       unsubscribeRisk();
     };
-  }, [user, authLoading, router]);
-
-  const fetchPerformanceData = async () => {
-    if (!user) return;
-
-    try {
-      setError(null);
-      const data = await getAllStrategiesPerformance();
-      setPerformanceData(data);
-    } catch (error) {
-      console.error('Error fetching performance data:', error);
-      setError(
-        error instanceof Error
-          ? error.message
-          : 'Failed to fetch performance data'
-      );
-    }
-  };
+  }, [user, authLoading, router, fetchPerformanceData]);
 
   const handleStrategySubmit = async (config: StrategyConfigType) => {
     if (!user) return;

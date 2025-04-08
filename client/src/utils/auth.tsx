@@ -4,9 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
-interface WithAuthProps {
-  [key: string]: any;
-}
+type WithAuthProps = Record<string, unknown>;
 
 // Higher-order component for protected routes
 export function withAuth<P extends WithAuthProps>(

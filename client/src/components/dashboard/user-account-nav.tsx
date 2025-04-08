@@ -22,7 +22,7 @@ export function UserAccountNav() {
   console.log(user);
   useEffect(() => {
     checkAuth();
-  }, []);
+  }, [checkAuth]);
 
   if (!user) {
     return (

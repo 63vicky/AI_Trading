@@ -35,7 +35,7 @@ export default function VerifyEmailPage({
 
         setStatus('success');
         setMessage('Email verified successfully! You can now login.');
-      } catch (error) {
+      } catch {
         setStatus('error');
         setMessage(
           'Invalid or expired verification link. Please try registering again.'

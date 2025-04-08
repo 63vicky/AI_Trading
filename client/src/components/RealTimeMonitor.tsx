@@ -39,7 +39,7 @@ export function RealTimeMonitor({ liveData }: RealTimeMonitorProps) {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {liveData?.activeStrategies}
+              {liveData?.activeStrategies || 0}
             </div>
           </CardContent>
         </Card>
@@ -51,7 +51,9 @@ export function RealTimeMonitor({ liveData }: RealTimeMonitorProps) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{liveData?.openPositions}</div>
+            <div className="text-2xl font-bold">
+              {liveData?.openPositions || 0}
+            </div>
           </CardContent>
         </Card>
 
@@ -63,11 +65,11 @@ export function RealTimeMonitor({ liveData }: RealTimeMonitorProps) {
           </CardHeader>
           <CardContent>
             <div
-              className={`text-2xl font-bold ${
-                liveData?.todayPnL >= 0 ? 'text-green-500' : 'text-red-500'
-              }`}
+              className={`text-2xl font-bold ${getPnLClass(
+                liveData?.todayPnL
+              )}`}
             >
-              {liveData?.todayPnL?.toFixed(2)}%
+              {formatNumber(liveData?.todayPnL)}%
             </div>
           </CardContent>
         </Card>
@@ -80,7 +82,7 @@ export function RealTimeMonitor({ liveData }: RealTimeMonitorProps) {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {liveData?.totalExposure?.toFixed(2)}%
+              {formatNumber(liveData?.totalExposure)}%
             </div>
           </CardContent>
         </Card>
