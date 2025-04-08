@@ -42,7 +42,6 @@ export default function DashboardPage() {
     volatility: 0,
   });
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
-
   const fetchPerformanceData = useCallback(async () => {
     if (!user) return;
 
@@ -59,7 +58,6 @@ export default function DashboardPage() {
       );
     }
   }, [user, getAllStrategiesPerformance]);
-
   useEffect(() => {
     if (!authLoading && !user) {
       router.push('/login');

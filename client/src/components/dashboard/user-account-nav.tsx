@@ -19,7 +19,6 @@ import { useEffect } from 'react';
 export function UserAccountNav() {
   const router = useRouter();
   const { user, logout, checkAuth } = useAuth();
-  console.log(user);
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);

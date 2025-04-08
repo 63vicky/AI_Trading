@@ -30,8 +30,6 @@ interface ApiResponse<T> {
 
 export const api = {
   async register(data: RegisterData): Promise<ApiResponse<{ user: User }>> {
-    console.log(JSON.stringify(data));
-
     const response = await fetch(`${API_URL}/auth/register`, {
       method: 'POST',
       headers: {
