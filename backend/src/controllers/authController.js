@@ -174,10 +174,18 @@ exports.login = async (req, res) => {
     const token = signToken(user._id);
 
     // Set cookie
-    res.cookie('token', token, {
-      maxAge: process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
+    const cookieOptions = {
+      expires: new Date(
+        Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+      ),
       httpOnly: true,
-    });
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      domain:
+        process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined,
+    };
+
+    res.cookie('token', token, cookieOptions);
 
     // Remove sensitive data from response
     user.password = undefined;
@@ -264,12 +272,16 @@ exports.getMe = async (req, res) => {
 exports.logout = (req, res) => {
   try {
     // Clear the token cookie
-    res.cookie('token', 'loggedout', {
-      maxAge: 10 * 1000, // 10 seconds
+    const cookieOptions = {
+      expires: new Date(Date.now() + 10 * 1000), // 10 seconds
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-    });
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      domain:
+        process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined,
+    };
+
+    res.cookie('token', 'loggedout', cookieOptions);
 
     res.status(200).json({
       status: 'success',

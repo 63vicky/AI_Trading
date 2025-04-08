@@ -34,12 +34,7 @@ app.use(
   })
 );
 app.use(express.json());
-app.use(
-  cookieParser({
-    sameSite: 'none',
-    secure: true,
-  })
-);
+app.use(cookieParser());
 
 // Routes
 app.use('/api/auth', authRoutes);
