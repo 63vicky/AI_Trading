@@ -1,4 +1,5 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const API_URL =
+  `${process.env.NEXT_PUBLIC_API_URL}/api` || 'http://localhost:5000/api';
 
 interface User {
   _id: string;
@@ -29,6 +30,8 @@ interface ApiResponse<T> {
 
 export const api = {
   async register(data: RegisterData): Promise<ApiResponse<{ user: User }>> {
+    console.log(JSON.stringify(data));
+
     const response = await fetch(`${API_URL}/auth/register`, {
       method: 'POST',
       headers: {

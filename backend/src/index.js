@@ -24,7 +24,7 @@ app.use(
     origin: [
       process.env.FRONTEND_URL,
       'http://localhost:3000',
-      'https://ai-trading-frontend.vercel.app',
+      'https://ai-trading-lac.vercel.app',
       'https://*.vercel.app',
     ],
     credentials: true,
