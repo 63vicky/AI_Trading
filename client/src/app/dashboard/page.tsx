@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { StrategyConfig } from '@/components/StrategyConfig';
 import { PerformanceDashboard } from '@/components/PerformanceDashboard';
 import { RiskManagement } from '@/components/RiskManagement';
@@ -42,10 +42,13 @@ export default function DashboardPage() {
     volatility: 0,
   });
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+  const isFetching = useRef(false);
+
   const fetchPerformanceData = useCallback(async () => {
-    if (!user) return;
+    if (!user || isFetching.current) return;
 
     try {
+      isFetching.current = true;
       setError(null);
       const data = await getAllStrategiesPerformance();
       setPerformanceData(data);
@@ -56,8 +59,11 @@ export default function DashboardPage() {
           ? error.message
           : 'Failed to fetch performance data'
       );
+    } finally {
+      isFetching.current = false;
     }
   }, [user, getAllStrategiesPerformance]);
+
   useEffect(() => {
     if (!authLoading && !user) {
       router.push('/login');
@@ -92,7 +98,9 @@ export default function DashboardPage() {
     });
 
     // Fetch initial performance data
-    fetchPerformanceData();
+    if (user && !isFetching.current) {
+      fetchPerformanceData();
+    }
 
     // Cleanup subscriptions on unmount
     return () => {

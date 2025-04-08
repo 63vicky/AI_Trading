@@ -174,14 +174,9 @@ exports.login = async (req, res) => {
     const token = signToken(user._id);
 
     // Set cookie
-    res.cookie('jwt', token, {
-      expires: new Date(
-        Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-      ),
+    res.cookie('token', token, {
+      maxAge: process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000,
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
-      path: '/',
     });
 
     // Remove sensitive data from response
