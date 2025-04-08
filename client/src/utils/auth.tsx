@@ -79,6 +79,9 @@ export async function isAuthenticated(): Promise<boolean> {
   try {
     const response = await fetch(`${API_URL}/api/auth/me`, {
       credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
     return response.ok;
   } catch (error) {
@@ -92,6 +95,9 @@ export async function isVerified(): Promise<boolean> {
   try {
     const response = await fetch(`${API_URL}/api/auth/me`, {
       credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
     });
     const data = await response.json();
     return response.ok && data.data.user.isVerified;
