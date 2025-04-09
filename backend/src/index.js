@@ -36,6 +36,8 @@ app.use(
       'Accept',
       'Cache-Control',
       'Pragma',
+      'Origin',
+      'X-Requested-With',
     ],
     exposedHeaders: ['Set-Cookie'],
     preflightContinue: false,
