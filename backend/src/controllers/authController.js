@@ -191,6 +191,8 @@ exports.login = async (req, res) => {
       secure: true,
       sameSite: 'none',
       path: '/',
+      domain:
+        process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined,
     };
 
     // Set cookie

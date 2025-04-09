@@ -38,9 +38,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const checkAuth = useCallback(async () => {
     try {
-      setLoading(true);
-      setError(null);
-
       const response = await fetch(`${API_URL}/api/auth/me`, {
         method: 'GET',
         credentials: 'include',
@@ -51,6 +48,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       if (!response.ok) {
+        console.error(
+          'Auth check failed:',
+          response.status,
+          response.statusText
+        );
         setUser(null);
         return;
       }
@@ -79,8 +81,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          'Cache-Control': 'no-cache',
-          Pragma: 'no-cache',
         },
         credentials: 'include',
         body: JSON.stringify({ email, password }),
