@@ -10,7 +10,7 @@ import {
 } from 'react';
 import { useRouter } from 'next/navigation';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 interface User {
   id: string;
@@ -38,14 +38,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const checkAuth = useCallback(async () => {
     try {
+      setLoading(true);
+      setError(null);
+
       const response = await fetch(`${API_URL}/api/auth/me`, {
         method: 'GET',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          'Cache-Control': 'no-cache',
-          Pragma: 'no-cache',
         },
       });
 
