@@ -10,8 +10,7 @@ const performanceRoutes = require('./routes/performance.js');
 const strategiesRoutes = require('./routes/strategies.js');
 const cookieParser = require('cookie-parser');
 const WebSocket = require('ws');
-const path = require('path');
-const { setupWebSocket } = require('./websocket');
+
 // Load environment variables
 dotenv.config();
 
