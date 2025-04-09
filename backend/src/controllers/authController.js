@@ -191,8 +191,6 @@ exports.login = async (req, res) => {
       secure: true,
       sameSite: 'none',
       path: '/',
-      domain:
-        process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined,
     };
 
     // Set cookie
@@ -287,10 +285,9 @@ exports.logout = (req, res) => {
     const cookieOptions = {
       expires: new Date(Date.now() + 10 * 1000), // 10 seconds
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-      domain:
-        process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined,
+      secure: true,
+      sameSite: 'none',
+      path: '/',
     };
 
     res.cookie('token', 'loggedout', cookieOptions);

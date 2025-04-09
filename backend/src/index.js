@@ -39,6 +39,8 @@ const corsOptions = {
   ],
   exposedHeaders: ['Set-Cookie'],
   maxAge: 86400,
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));
