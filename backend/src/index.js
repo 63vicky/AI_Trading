@@ -10,6 +10,8 @@ const performanceRoutes = require('./routes/performance.js');
 const strategiesRoutes = require('./routes/strategies.js');
 const cookieParser = require('cookie-parser');
 const WebSocket = require('ws');
+const path = require('path');
+const { setupWebSocket } = require('./websocket');
 // Load environment variables
 dotenv.config();
 
@@ -19,31 +21,27 @@ connectDB();
 const app = express();
 
 // Middleware
-app.use(
-  cors({
-    origin: [
-      process.env.FRONTEND_URL,
-      'http://localhost:3000',
-      'https://ai-trading-lac.vercel.app',
-      'https://*.vercel.app',
-    ],
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: [
-      'Content-Type',
-      'Authorization',
-      'Cookie',
-      'Accept',
-      'Cache-Control',
-      'Pragma',
-      'Origin',
-      'X-Requested-With',
-    ],
-    exposedHeaders: ['Set-Cookie'],
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-  })
-);
+const corsOptions = {
+  origin: [
+    'http://localhost:3000',
+    'https://ai-trading-frontend.vercel.app',
+    'https://ai-trading-lac.vercel.app',
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+    'Origin',
+    'X-Requested-With',
+  ],
+  exposedHeaders: ['Set-Cookie'],
+  maxAge: 86400,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 

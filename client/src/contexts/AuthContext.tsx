@@ -10,7 +10,7 @@ import {
 } from 'react';
 import { useRouter } from 'next/navigation';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 interface User {
   id: string;
@@ -24,7 +24,7 @@ interface AuthContextType {
   loading: boolean;
   error: string | null;
   login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   checkAuth: () => Promise<void>;
 }
 
@@ -38,9 +38,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const checkAuth = useCallback(async () => {
     try {
-      setLoading(true);
-      setError(null);
-
       const response = await fetch(`${API_URL}/api/auth/me`, {
         method: 'GET',
         credentials: 'include',
@@ -50,16 +47,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           'Cache-Control': 'no-cache',
           Pragma: 'no-cache',
         },
-        cache: 'no-store',
-        mode: 'cors',
       });
 
       if (!response.ok) {
-        console.error(
-          'Auth check failed:',
-          response.status,
-          response.statusText
-        );
         setUser(null);
         return;
       }
@@ -71,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(null);
       }
     } catch (error) {
-      console.error('💥 Auth check error:', error);
+      console.error('Auth check error:', error);
       setUser(null);
     } finally {
       setLoading(false);
@@ -91,8 +81,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           'Cache-Control': 'no-cache',
           Pragma: 'no-cache',
         },
-        body: JSON.stringify({ email, password }),
         credentials: 'include',
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
@@ -101,15 +91,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error(data.message || 'Login failed');
       }
 
-      await checkAuth();
+      setUser(data.data.user);
       router.push('/dashboard');
     } catch (error) {
-      console.error('💥 Login error:', error);
-      setError(
-        error instanceof Error
-          ? error.message
-          : 'An error occurred during login'
-      );
+      console.error('Login error:', error);
+      setError(error instanceof Error ? error.message : 'Login failed');
     } finally {
       setLoading(false);
     }
@@ -123,14 +109,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          'Cache-Control': 'no-cache',
-          Pragma: 'no-cache',
         },
       });
       setUser(null);
       router.push('/');
     } catch (error) {
-      console.error('💥 Logout error:', error);
+      console.error('Logout error:', error);
     }
   };
 
@@ -138,16 +122,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     checkAuth();
   }, [checkAuth]);
 
-  const value = {
-    user,
-    loading,
-    error,
-    login,
-    logout,
-    checkAuth,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        loading,
+        error,
+        login,
+        logout,
+        checkAuth,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {

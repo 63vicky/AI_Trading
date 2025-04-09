@@ -145,7 +145,7 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check if email and password exist
+    // Validate input
     if (!email || !password) {
       return res.status(400).json({
         status: 'error',
@@ -153,16 +153,25 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Check if user exists and password is correct
+    // Find user
     const user = await User.findOne({ email }).select('+password');
-    if (!user || !(await user.correctPassword(password, user.password))) {
+    if (!user) {
       return res.status(401).json({
         status: 'error',
-        message: 'Incorrect email or password',
+        message: 'Invalid credentials',
       });
     }
 
-    // Check if user is verified
+    // Check password
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      return res.status(401).json({
+        status: 'error',
+        message: 'Invalid credentials',
+      });
+    }
+
+    // Check if email is verified
     if (!user.isVerified) {
       return res.status(401).json({
         status: 'error',
@@ -170,40 +179,38 @@ exports.login = async (req, res) => {
       });
     }
 
-    // Generate JWT token
-    const token = signToken(user._id);
+    // Generate token
+    const token = user.getSignedJwtToken();
 
-    // Set cookie
+    // Set cookie options
     const cookieOptions = {
       expires: new Date(
         Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
       ),
       httpOnly: true,
-      secure: true, // Always use secure in production
-      sameSite: 'none', // Required for cross-site cookies
+      secure: true,
+      sameSite: 'none',
       path: '/',
-      domain:
-        process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined,
     };
 
-    // Set cookie in response
+    // Set cookie
     res.cookie('token', token, cookieOptions);
 
-    // Remove sensitive data from response
+    // Remove password from output
     user.password = undefined;
 
     res.status(200).json({
       status: 'success',
-      token,
       data: {
         user,
+        token,
       },
     });
   } catch (error) {
     console.error('Login error:', error);
-    res.status(400).json({
+    res.status(500).json({
       status: 'error',
-      message: error.message,
+      message: 'An error occurred during login',
     });
   }
 };
