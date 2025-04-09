@@ -181,10 +181,12 @@ exports.login = async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      path: '/',
       domain:
         process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined,
     };
 
+    // Set cookie in response
     res.cookie('token', token, cookieOptions);
 
     // Remove sensitive data from response
@@ -198,6 +200,7 @@ exports.login = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error('Login error:', error);
     res.status(400).json({
       status: 'error',
       message: error.message,

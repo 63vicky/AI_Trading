@@ -13,10 +13,11 @@ exports.protect = async (req, res, next) => {
     } else if (req.cookies && req.cookies.token) {
       token = req.cookies.token;
     }
-    console.log('💥 req.headers', req.headers);
-    console.log('💥 req.cookies', req.cookies);
 
     if (!token) {
+      console.log('No token found in request');
+      console.log('Headers:', req.headers);
+      console.log('Cookies:', req.cookies);
       return res.status(401).json({
         status: 'error',
         message: 'You are not logged in! Please log in to get access.',
@@ -48,9 +49,21 @@ exports.protect = async (req, res, next) => {
     next();
   } catch (error) {
     console.error('Authentication error:', error);
+    if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({
+        status: 'error',
+        message: 'Invalid token. Please log in again!',
+      });
+    }
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({
+        status: 'error',
+        message: 'Your token has expired! Please log in again.',
+      });
+    }
     res.status(401).json({
       status: 'error',
-      message: 'Invalid token. Please log in again!',
+      message: 'Authentication failed. Please log in again!',
     });
   }
 };
