@@ -64,8 +64,12 @@ export function LoginForm() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Accept: 'application/json',
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache',
         },
         body: JSON.stringify(data),
+        credentials: 'include',
       });
 
       const result = await response.json();
@@ -88,8 +92,11 @@ export function LoginForm() {
 
       toast.success('Login successful');
       router.push('/dashboard');
-    } catch {
-      toast.error('Invalid credentials');
+    } catch (error) {
+      console.error('Login error:', error);
+      toast.error(
+        error instanceof Error ? error.message : 'Invalid credentials'
+      );
     } finally {
       setIsLoading(false);
     }

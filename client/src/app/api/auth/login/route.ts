@@ -17,6 +17,9 @@ export async function POST(request: Request) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
       },
       body: JSON.stringify(body),
       credentials: 'include',

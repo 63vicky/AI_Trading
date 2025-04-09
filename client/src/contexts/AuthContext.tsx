@@ -53,15 +53,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         cache: 'no-store',
         mode: 'cors',
       });
-      console.log('💥 response', response);
 
       if (!response.ok) {
+        console.error(
+          'Auth check failed:',
+          response.status,
+          response.statusText
+        );
         setUser(null);
         return;
       }
 
       const data = await response.json();
-      setUser(data.data.user);
+      if (data.status === 'success' && data.data.user) {
+        setUser(data.data.user);
+      } else {
+        setUser(null);
+      }
     } catch (error) {
       console.error('💥 Auth check error:', error);
       setUser(null);
@@ -75,10 +83,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Accept: 'application/json',
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache',
         },
         body: JSON.stringify({ email, password }),
         credentials: 'include',
@@ -87,7 +98,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || 'Login failed');
+        throw new Error(data.message || 'Login failed');
       }
 
       await checkAuth();
@@ -109,6 +120,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await fetch(`${API_URL}/api/auth/logout`, {
         method: 'POST',
         credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache',
+        },
       });
       setUser(null);
       router.push('/');
