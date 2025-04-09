@@ -85,7 +85,13 @@ export default function DashboardPage() {
       'performance',
       (data) => {
         if ('totalPnL' in data) {
-          setPerformanceData(data as PerformanceData);
+          setPerformanceData(
+            (prev) =>
+              ({
+                ...prev,
+                ...data,
+              } as PerformanceData)
+          );
         }
       }
     );
@@ -97,7 +103,7 @@ export default function DashboardPage() {
       }
     });
 
-    // Fetch initial performance data
+    // Fetch initial performance data only once when component mounts
     if (user && !isFetching.current) {
       fetchPerformanceData();
     }
