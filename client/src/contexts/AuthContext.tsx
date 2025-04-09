@@ -38,7 +38,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const checkAuth = useCallback(async () => {
     try {
+      setLoading(true);
+      setError(null);
+
       const response = await fetch(`${API_URL}/api/auth/me`, {
+        method: 'GET',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
