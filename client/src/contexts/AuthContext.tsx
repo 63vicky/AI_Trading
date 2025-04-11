@@ -38,12 +38,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const checkAuth = useCallback(async () => {
     try {
+      setLoading(true);
+      setError(null);
+
       const response = await fetch(`${API_URL}/api/auth/me`, {
         method: 'GET',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache',
         },
       });
 
@@ -81,6 +86,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache',
         },
         credentials: 'include',
         body: JSON.stringify({ email, password }),
@@ -90,6 +97,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (!response.ok) {
         throw new Error(data.message || 'Login failed');
+      }
+
+      // Store the token in localStorage for debugging
+      if (data.data.token) {
+        localStorage.setItem('token', data.data.token);
       }
 
       setUser(data.data.user);

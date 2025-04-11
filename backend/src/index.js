@@ -36,17 +36,18 @@ const corsOptions = {
     'Origin',
     'Cache-Control',
     'Pragma',
+    'Cookie',
   ],
   exposedHeaders: ['Set-Cookie'],
   maxAge: 86400,
   preflightContinue: false,
   optionsSuccessStatus: 204,
-  domain: 'ai-trading-lac.vercel.app',
 };
 
+// Apply CORS middleware before other middleware
 app.use(cors(corsOptions));
-app.use(express.json());
 app.use(cookieParser());
+app.use(express.json());
 
 // Routes
 app.use('/api/auth', authRoutes);
