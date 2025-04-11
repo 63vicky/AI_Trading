@@ -122,7 +122,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // First, clear all cookies with proper domain
       const domain =
         process.env.NODE_ENV === 'production'
-          ? '.ai-trading-lac.vercel.app'
+          ? 'ai-trading-lac.vercel.app'
           : window.location.hostname;
       console.log(document.cookie);
       const cookies = document.cookie.split(';');
