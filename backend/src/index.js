@@ -19,33 +19,34 @@ connectDB();
 
 const app = express();
 
-// Enable CORS with proper settings
-app.use(
-  cors({
-    origin:
-      process.env.NODE_ENV === 'production'
-        ? [
-            'https://ai-trading-lac.vercel.app',
-            'https://ai-trading-lac.vercel.app/',
-          ]
-        : 'http://localhost:3000',
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: [
-      'Content-Type',
-      'Authorization',
-      'Accept',
-      'Origin',
-      'X-Requested-With',
-    ],
-    exposedHeaders: ['Set-Cookie'],
-  })
-);
+// CORS configuration
+const corsOptions = {
+  origin: [
+    'http://localhost:3000',
+    'https://ai-trading-frontend.vercel.app',
+    'https://ai-trading-lac.vercel.app',
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+    'Origin',
+    'Cache-Control',
+    'Pragma',
+    'Cookie',
+  ],
+  exposedHeaders: ['Set-Cookie'],
+  maxAge: 86400,
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+};
 
-// Parse cookies
+// Apply CORS middleware before other middleware
 app.use(cookieParser());
-
-// Parse JSON bodies
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Routes

@@ -188,13 +188,9 @@ exports.login = async (req, res) => {
         Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
       ),
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      secure: true,
+      sameSite: 'none',
       path: '/',
-      domain:
-        process.env.NODE_ENV === 'production'
-          ? 'ai-trading-lac.vercel.app'
-          : undefined,
     };
 
     // Set cookie
@@ -289,12 +285,12 @@ exports.logout = (req, res) => {
     const cookieOptions = {
       expires: new Date(0), // Set to past date to ensure deletion
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      secure: true, // Always true in production
+      sameSite: 'none', // Required for cross-domain cookies
       path: '/',
       domain:
         process.env.NODE_ENV === 'production'
-          ? 'ai-trading-lac.vercel.app'
+          ? '.ai-trading-lac.vercel.app'
           : undefined,
     };
 

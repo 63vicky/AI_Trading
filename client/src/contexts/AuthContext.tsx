@@ -40,6 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setLoading(true);
       setError(null);
+      const token = localStorage.getItem('token');
 
       const response = await fetch(`${API_URL}/api/auth/me`, {
         method: 'GET',
@@ -49,6 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           Accept: 'application/json',
           'Cache-Control': 'no-cache',
           Pragma: 'no-cache',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 
@@ -99,6 +101,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error(data.message || 'Login failed');
       }
 
+      if (data.data.token) {
+        localStorage.setItem('token', data.data.token);
+      }
+
       setUser(data.data.user);
       router.push('/dashboard');
     } catch (error) {
@@ -111,11 +117,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
+      const token = localStorage.getItem('token');
       // First, clear all cookies with proper domain
       const domain =
         process.env.NODE_ENV === 'production'
           ? '.ai-trading-lac.vercel.app'
           : window.location.hostname;
+      console.log(document.cookie);
       const cookies = document.cookie.split(';');
       for (const cookie of cookies) {
         const [name] = cookie.split('=');
@@ -131,6 +139,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           Accept: 'application/json',
           'Cache-Control': 'no-cache',
           Pragma: 'no-cache',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 
