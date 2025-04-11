@@ -120,6 +120,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = async () => {
     try {
       const token = localStorage.getItem('token');
+
+      // First, clear all cookies by setting them to expire
+      document.cookie.split(';').forEach((cookie) => {
+        const [name] = cookie.split('=');
+        document.cookie = `${name.trim()}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=${
+          window.location.hostname
+        }; secure; samesite=none`;
+      });
+
+      // Then call the logout endpoint
       await fetch(`${API_URL}/api/auth/logout`, {
         method: 'POST',
         credentials: 'include',
@@ -132,13 +142,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         },
       });
 
+      // Clear local storage
       localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('auth-storage');
 
+      // Clear state
       setUser(null);
-      router.push('/');
-      router.refresh(); // Force a refresh to ensure the auth state is updated
+
+      // Force a hard refresh to ensure all state is cleared
+      window.location.href = '/';
     } catch (error) {
       console.error('Logout error:', error);
+      // Even if the API call fails, we should still clear local state
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('auth-storage');
+      setUser(null);
+      window.location.href = '/';
     }
   };
 
