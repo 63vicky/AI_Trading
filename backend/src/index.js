@@ -23,7 +23,10 @@ const app = express();
 const corsOptions = {
   origin: [
     'http://localhost:3000',
-    'https://ai-trading-frontend.vercel.app',
+    'http://localhost:5000',
+    'https://ai-trading-backend-9pig.onrender.com',
+    'https://ai-trading-backend-9pig.onrender.com/',
+    'https://ai-trading-lac.vercel.app/',
     'https://ai-trading-lac.vercel.app',
   ],
   credentials: true,
