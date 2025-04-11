@@ -117,7 +117,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
-      const token = localStorage.getItem('token');
+      // First, clear all cookies with proper domain
+      const domain =
+        process.env.NODE_ENV === 'production'
+          ? '.ai-trading-lac.vercel.app'
+          : window.location.hostname;
+      const cookies = document.cookie.split(';');
+      for (const cookie of cookies) {
+        const [name] = cookie.split('=');
+        document.cookie = `${name.trim()}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain}; secure; samesite=none`;
+      }
+      console.log(document.cookie);
 
       // Then call the logout endpoint
       await fetch(`${API_URL}/api/auth/logout`, {
@@ -128,18 +138,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           Accept: 'application/json',
           'Cache-Control': 'no-cache',
           Pragma: 'no-cache',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
-
-      // First, clear all cookies
-      const cookies = document.cookie.split(';');
-      for (const cookie of cookies) {
-        const [name] = cookie.split('=');
-        document.cookie = `${name.trim()}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${
-          window.location.hostname
-        }; secure; samesite=none`;
-      }
 
       // Clear localStorage
       localStorage.removeItem('token');
