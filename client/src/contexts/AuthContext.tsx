@@ -40,7 +40,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setLoading(true);
       setError(null);
-      // Get token from localStorage
       const token = localStorage.getItem('token');
 
       const response = await fetch(`${API_URL}/api/auth/me`, {
@@ -102,7 +101,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error(data.message || 'Login failed');
       }
 
-      // Store the token in localStorage
       if (data.data.token) {
         localStorage.setItem('token', data.data.token);
       }
@@ -121,14 +119,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const token = localStorage.getItem('token');
 
-      // First, clear all cookies by setting them to expire
-      document.cookie.split(';').forEach((cookie) => {
-        const [name] = cookie.split('=');
-        document.cookie = `${name.trim()}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; domain=${
-          window.location.hostname
-        }; secure; samesite=none`;
-      });
-
       // Then call the logout endpoint
       await fetch(`${API_URL}/api/auth/logout`, {
         method: 'POST',
@@ -142,22 +132,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         },
       });
 
-      // Clear local storage
+      // First, clear all cookies
+      const cookies = document.cookie.split(';');
+      for (const cookie of cookies) {
+        const [name] = cookie.split('=');
+        document.cookie = `${name.trim()}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${
+          window.location.hostname
+        }; secure; samesite=none`;
+      }
+
+      // Clear localStorage
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      localStorage.removeItem('auth-storage');
 
       // Clear state
       setUser(null);
+      setError(null);
 
       // Force a hard refresh to ensure all state is cleared
       window.location.href = '/';
     } catch (error) {
       console.error('Logout error:', error);
-      // Even if the API call fails, we should still clear local state
+      // Even if the API call fails, we still want to clear local state
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      localStorage.removeItem('auth-storage');
       setUser(null);
       window.location.href = '/';
     }

@@ -281,17 +281,24 @@ exports.getMe = async (req, res) => {
 
 exports.logout = (req, res) => {
   try {
-    // Clear the token cookie
+    // Clear the token cookie with proper options
     const cookieOptions = {
-      expires: new Date(Date.now() + 10 * 1000), // 10 seconds
+      expires: new Date(0), // Set to past date to ensure deletion
       httpOnly: true,
-      secure: true,
-      sameSite: 'none',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       path: '/',
+      domain:
+        process.env.NODE_ENV === 'production'
+          ? '.ai-trading-lac.vercel.app'
+          : undefined,
     };
 
+    // Clear both token and any other auth-related cookies
     res.clearCookie('token', cookieOptions);
+    res.clearCookie('connect.sid', cookieOptions);
 
+    // Send response before redirect
     res.status(200).json({
       status: 'success',
       message: 'Logged out successfully',
