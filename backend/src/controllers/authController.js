@@ -289,8 +289,8 @@ exports.logout = (req, res) => {
     const cookieOptions = {
       expires: new Date(0), // Set to past date to ensure deletion
       httpOnly: true,
-      secure: true, // Always true in production
-      sameSite: 'none', // Required for cross-domain cookies
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       path: '/',
       domain:
         process.env.NODE_ENV === 'production'
