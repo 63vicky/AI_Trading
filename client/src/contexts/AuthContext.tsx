@@ -98,7 +98,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!response.ok) {
         throw new Error(data.message || 'Login failed');
       }
-
+      console.log('Login response from context:', data);
       // Store the token in localStorage for debugging
       if (data.data.token) {
         localStorage.setItem('token', data.data.token);
