@@ -95,7 +95,9 @@ export function LoginForm() {
       });
 
       toast.success('Login successful');
-      router.push('/dashboard');
+      setTimeout(() => {
+        router.push('/dashboard');
+      }, 1000);
     } catch (error) {
       console.error('Login error:', error);
       toast.error(
