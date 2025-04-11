@@ -149,7 +149,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem('user');
       localStorage.removeItem('auth-storage');
 
-      deleteCookie('cookieName');
+      deleteCookie('token');
 
       // Clear state
       setUser(null);
