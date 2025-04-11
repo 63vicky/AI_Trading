@@ -144,6 +144,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Clear localStorage
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      localStorage.removeItem('auth-storage');
 
       // Clear state
       setUser(null);
@@ -156,6 +157,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Even if the API call fails, we still want to clear local state
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      localStorage.removeItem('auth-storage');
       setUser(null);
       window.location.href = '/';
     }
