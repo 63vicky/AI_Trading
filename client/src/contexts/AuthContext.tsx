@@ -122,7 +122,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // First, clear all cookies with proper domain
       const domain =
         process.env.NODE_ENV === 'production'
-          ? 'ai-trading-lac.vercel.app'
+          ? '.ai-trading-lac.vercel.app'
           : window.location.hostname;
       console.log(document.cookie);
       const cookies = document.cookie.split(';');
@@ -149,7 +149,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem('user');
       localStorage.removeItem('auth-storage');
 
-      deleteCookie('token');
+      deleteCookie('token', {
+        domain:
+          process.env.NODE_ENV === 'production'
+            ? '.ai-trading-lac.vercel.app'
+            : undefined,
+      });
 
       // Clear state
       setUser(null);
