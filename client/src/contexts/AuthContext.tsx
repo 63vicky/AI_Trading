@@ -126,12 +126,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
+          'Cache-Control': 'no-cache',
+          Pragma: 'no-cache',
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
+
       localStorage.removeItem('token');
+
       setUser(null);
       router.push('/');
+      router.refresh(); // Force a refresh to ensure the auth state is updated
     } catch (error) {
       console.error('Logout error:', error);
     }
