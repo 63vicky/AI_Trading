@@ -41,6 +41,7 @@ const corsOptions = {
   maxAge: 86400,
   preflightContinue: false,
   optionsSuccessStatus: 204,
+  domain: 'ai-trading-lac.vercel.app',
 };
 
 app.use(cors(corsOptions));
