@@ -193,7 +193,7 @@ exports.login = async (req, res) => {
       path: '/',
       domain:
         process.env.NODE_ENV === 'production'
-          ? '.ai-trading-lac.vercel.app'
+          ? 'ai-trading-lac.vercel.app'
           : undefined,
     };
 
@@ -294,7 +294,7 @@ exports.logout = (req, res) => {
       path: '/',
       domain:
         process.env.NODE_ENV === 'production'
-          ? '.ai-trading-lac.vercel.app'
+          ? 'ai-trading-lac.vercel.app'
           : undefined,
     };
 
