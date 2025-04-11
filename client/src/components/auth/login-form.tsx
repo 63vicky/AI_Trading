@@ -83,21 +83,24 @@ export function LoginForm() {
         throw new Error(result.error || 'Login failed');
       }
 
-      // Store the token in localStorage for debugging
+      // Store the token in localStorage
       if (result.data.token) {
         localStorage.setItem('token', result.data.token);
       }
+
       // Set the user in the auth store
-      setUser({
-        id: result?.data.user._id,
-        name: result?.data.user.name,
-        email: result?.data.user.email,
-      });
+      const userData = {
+        id: result.data.user._id,
+        name: result.data.user.name,
+        email: result.data.user.email,
+      };
+      setUser(userData);
 
       toast.success('Login successful');
-      setTimeout(() => {
-        router.push('/dashboard');
-      }, 1000);
+
+      // Navigate immediately after setting the user
+      router.push('/dashboard');
+      router.refresh(); // Force a refresh to ensure the auth state is updated
     } catch (error) {
       console.error('Login error:', error);
       toast.error(
