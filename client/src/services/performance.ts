@@ -46,7 +46,17 @@ class PerformanceService {
   }
 
   public async getAllStrategiesPerformance() {
-    return this.fetchWithCache(`${API_URL}/api/performance/strategies`);
+    const token = localStorage.getItem('token');
+    return this.fetchWithCache(`${API_URL}/api/performance/strategies`, {
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
   }
 
   public async getPeriodPerformance(startDate: string, endDate: string) {
