@@ -83,6 +83,10 @@ export function LoginForm() {
         throw new Error(result.error || 'Login failed');
       }
 
+      // Store the token in localStorage for debugging
+      if (result.data.token) {
+        localStorage.setItem('token', result.data.token);
+      }
       // Set the user in the auth store
       setUser({
         id: result?.data.user._id,

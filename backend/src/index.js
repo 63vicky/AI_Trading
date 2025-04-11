@@ -45,8 +45,8 @@ const corsOptions = {
 };
 
 // Apply CORS middleware before other middleware
-app.use(cors(corsOptions));
 app.use(cookieParser());
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Routes
