@@ -290,7 +290,7 @@ exports.logout = (req, res) => {
       path: '/',
     };
 
-    res.cookie('token', 'loggedout', cookieOptions);
+    res.clearCookie('token', cookieOptions);
 
     res.status(200).json({
       status: 'success',
