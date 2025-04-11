@@ -40,6 +40,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       setLoading(true);
       setError(null);
+      // Get token from localStorage
+      const token = localStorage.getItem('token');
 
       const response = await fetch(`${API_URL}/api/auth/me`, {
         method: 'GET',
@@ -49,6 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           Accept: 'application/json',
           'Cache-Control': 'no-cache',
           Pragma: 'no-cache',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
 
@@ -98,8 +101,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!response.ok) {
         throw new Error(data.message || 'Login failed');
       }
-      console.log('Login response from context:', data);
-      // Store the token in localStorage for debugging
+
+      // Store the token in localStorage
       if (data.data.token) {
         localStorage.setItem('token', data.data.token);
       }
@@ -116,14 +119,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
+      const token = localStorage.getItem('token');
       await fetch(`${API_URL}/api/auth/logout`, {
         method: 'POST',
         credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
       });
+      localStorage.removeItem('token');
       setUser(null);
       router.push('/');
     } catch (error) {
